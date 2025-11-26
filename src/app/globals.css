@@ -1,26 +1,70 @@
 @import "tailwindcss";
 
+@theme {
+  /* Brand Colors */
+  --color-brand-50: #e6f4ff;
+  --color-brand-100: #b3deff;
+  --color-brand-200: #80c9ff;
+  --color-brand-300: #4db3ff;
+  --color-brand-400: #1a9eff;
+  --color-brand-500: #057cd8;
+  --color-brand-600: #0463ad;
+  --color-brand-700: #034a82;
+  --color-brand-800: #023157;
+  --color-brand-900: #01182c;
+  --color-brand-950: #000c16;
+}
+
+@variant dark (&:is(.dark *));
+
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Mobile View Container - Fixed for all screens */
+#app-container {
+  width: 100%;
+  max-width: 440px;
+  height: 100vh;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+
+@media (max-width: 440px) {
+  #app-container {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 440px) {
+  #app-container {
+    width: 440px;
+    height: calc(100vh - 40px);
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+  }
 }
