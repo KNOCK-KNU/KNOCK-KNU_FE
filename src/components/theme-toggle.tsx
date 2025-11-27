@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Sun, Moon, Monitor } from "lucide-react";
-import { useTheme } from "@/app/theme-provider";
-import { useState, useEffect, useRef } from "react";
+import { Sun, Moon, Monitor } from 'lucide-react';
+import { useTheme } from '@/app/theme-provider';
+import { useState, useEffect, useRef } from 'react';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -20,14 +20,14 @@ export function ThemeToggle() {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const themes = [
-    { value: "light" as const, label: "라이트", icon: Sun },
-    { value: "dark" as const, label: "다크", icon: Moon },
-    { value: "system" as const, label: "시스템", icon: Monitor },
+    { value: 'light' as const, label: '라이트', icon: Sun },
+    { value: 'dark' as const, label: '다크', icon: Moon },
+    { value: 'system' as const, label: '시스템', icon: Monitor },
   ];
 
   const currentTheme = themes.find((t) => t.value === theme);
@@ -60,8 +60,8 @@ export function ThemeToggle() {
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                   isActive
-                    ? "bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700"
+                    ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'
                 }`}
               >
                 <ThemeIcon className="w-4 h-4" />

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Brand Colors */
@@ -17,15 +17,13 @@
 
 @variant dark (&:is(.dark *));
 
-
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
 .dark {
-  --background: #0a0a0a;
+  --background: #626262;
   --foreground: #ededed;
 }
 
