@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Store } from '@/types/store';
 
 declare global {
   interface Window {
@@ -8,18 +9,12 @@ declare global {
   }
 }
 
-export type StoreMarker = {
-  storeId: number;
-  latitude: number;
-  longitude: number;
-  name: string;
-  address: string;
-};
-
 type KakaoMapProps = {
-  stores: StoreMarker[]; // 여러 개 마커
-  level?: number; // 기본 줌 레벨
-  className?: string; // 스타일 커스터마이징
+  stores: Store[];
+  className?: string;
+  selectedStore?: Store | null;
+  onMarkerClick?: (store: Store) => void;
+  resetToken?: number; // ✅ 초기 위치로 되돌릴 때 쓰는 트리거
 };
 
 const KAKAO_MAP_KEY = process.env.NEXT_PUBLIC_KAKAO_MAP_KEY;
@@ -54,54 +49,124 @@ function loadKakaoMapScript() {
   return kakaoScriptLoadingPromise;
 }
 
-export function KakaoMap({ stores, level = 5, className }: KakaoMapProps) {
-  const mapRef = useRef<HTMLDivElement | null>(null);
+const INITIAL_LEVEL = 5;
+const SELECTED_LEVEL = 1;
 
+export function KakaoMap({
+  stores,
+  className,
+  selectedStore,
+  onMarkerClick,
+  resetToken,
+}: KakaoMapProps) {
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<any | null>(null);
+  const markersRef = useRef<any[]>([]);
+  const [isMapReady, setIsMapReady] = useState(false);
+  const [hasFitBounds, setHasFitBounds] = useState(false); // ✅ 초기/리셋 시에만 bounds 맞추기
+
+  // 0) resetToken 변경되면 다시 초기 위치로 맞출 준비
   useEffect(() => {
+    if (resetToken !== undefined) {
+      setHasFitBounds(false);
+    }
+  }, [resetToken]);
+
+  // 1) 지도 초기화 (한 번만)
+  useEffect(() => {
+    if (!mapRef.current) return;
     if (!stores || stores.length === 0) return;
 
-    let mapInstance: any;
+    let cancelled = false;
 
     loadKakaoMapScript().then(() => {
-      if (!mapRef.current) return;
-
+      if (!mapRef.current || cancelled) return;
       const kakao = window.kakao;
 
-      // 중심은 일단 첫 번째 가게 기준
       const first = stores[0];
       const center = new kakao.maps.LatLng(first.latitude, first.longitude);
 
-      mapInstance = new kakao.maps.Map(mapRef.current, {
+      const map = new kakao.maps.Map(mapRef.current, {
         center,
-        level,
+        level: INITIAL_LEVEL,
       });
 
-      const bounds = new kakao.maps.LatLngBounds();
-
-      // 여기서 map 함수로 가게 리스트 순회하면서 마커 생성
-      stores.map((store) => {
-        const position = new kakao.maps.LatLng(store.latitude, store.longitude);
-
-        const marker = new kakao.maps.Marker({
-          map: mapInstance,
-          position,
-        });
-
-        bounds.extend(position);
-
-        return marker;
-      });
-
-      // 모든 마커가 보이도록 Bounds 맞추기
-      if (stores.length > 1) {
-        mapInstance.setBounds(bounds);
-      }
+      mapInstanceRef.current = map;
+      setIsMapReady(true);
     });
 
     return () => {
-      mapInstance = null;
+      cancelled = true;
+      mapInstanceRef.current = null;
+      markersRef.current.forEach((m) => m.setMap(null));
+      markersRef.current = [];
     };
-  }, [stores, level]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 최초 1회만
+
+  // 2) 마커 렌더링 (필터/스토어 변화 전용)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!isMapReady) return;
+    if (!map || !window.kakao?.maps) return;
+    if (!stores || stores.length === 0) return;
+
+    const kakao = window.kakao;
+
+    // 기존 마커 제거
+    markersRef.current.forEach((m) => m.setMap(null));
+    markersRef.current = [];
+
+    const bounds = new kakao.maps.LatLngBounds();
+
+    stores.forEach((store) => {
+      const position = new kakao.maps.LatLng(store.latitude, store.longitude);
+
+      const marker = new kakao.maps.Marker({
+        map,
+        position,
+      });
+
+      if (onMarkerClick) {
+        kakao.maps.event.addListener(marker, 'click', () => {
+          onMarkerClick(store);
+        });
+      }
+
+      markersRef.current.push(marker);
+      bounds.extend(position);
+    });
+
+    // ✅ hasFitBounds가 false일 때만 "초기 화면"으로 맞춰줌
+    if (!hasFitBounds) {
+      if (stores.length > 1) {
+        map.setBounds(bounds);
+      } else if (stores.length === 1) {
+        map.setCenter(
+          new kakao.maps.LatLng(stores[0].latitude, stores[0].longitude)
+        );
+        map.setLevel(INITIAL_LEVEL);
+      }
+      setHasFitBounds(true);
+    }
+  }, [stores, isMapReady, onMarkerClick, hasFitBounds]);
+
+  // 3) 선택된 매장 클릭/검색 전용 카메라 제어
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!isMapReady) return;
+    if (!map || !window.kakao?.maps) return;
+    if (!selectedStore) return;
+
+    const kakao = window.kakao;
+    const center = new kakao.maps.LatLng(
+      selectedStore.latitude,
+      selectedStore.longitude
+    );
+
+    map.setLevel(SELECTED_LEVEL);
+    map.panTo(center);
+  }, [selectedStore, isMapReady]);
 
   return (
     <div
