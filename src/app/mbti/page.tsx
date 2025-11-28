@@ -2,6 +2,25 @@
 
 import { useState } from 'react';
 
+const MBTI_TYPES = [
+  'ISTJ',
+  'ISFJ',
+  'INFJ',
+  'INTJ',
+  'ISTP',
+  'ISFP',
+  'INFP',
+  'INTP',
+  'ESTP',
+  'ESFP',
+  'ENFP',
+  'ENTP',
+  'ESTJ',
+  'ESFJ',
+  'ENFJ',
+  'ENTJ',
+];
+
 export default function MBTIPage() {
   const [person1Name, setPerson1Name] = useState('');
   const [person1Mbti, setPerson1Mbti] = useState('');
@@ -68,7 +87,7 @@ export default function MBTIPage() {
                 />
               </div>
 
-              {/* MBTI */}
+              {/* MBTI 드롭다운 */}
               <div className="space-y-1.5">
                 <label
                   htmlFor="person1-mbti"
@@ -76,15 +95,21 @@ export default function MBTIPage() {
                 >
                   MBTI
                 </label>
-                <input
+                <select
                   id="person1-mbti"
-                  type="text"
-                  placeholder="예: ENFP"
                   value={person1Mbti}
-                  onChange={(e) => setPerson1Mbti(e.target.value.toUpperCase())}
-                  maxLength={4}
-                  className="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm uppercase tracking-wide text-slate-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                />
+                  onChange={(e) => setPerson1Mbti(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                >
+                  <option value="" disabled>
+                    MBTI를 선택하세요
+                  </option>
+                  {MBTI_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </section>
@@ -122,7 +147,7 @@ export default function MBTIPage() {
                 />
               </div>
 
-              {/* MBTI */}
+              {/* MBTI 드롭다운 */}
               <div className="space-y-1.5">
                 <label
                   htmlFor="person2-mbti"
@@ -130,15 +155,21 @@ export default function MBTIPage() {
                 >
                   MBTI
                 </label>
-                <input
+                <select
                   id="person2-mbti"
-                  type="text"
-                  placeholder="예: ISTJ"
                   value={person2Mbti}
-                  onChange={(e) => setPerson2Mbti(e.target.value.toUpperCase())}
-                  maxLength={4}
-                  className="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm uppercase tracking-wide text-slate-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-                />
+                  onChange={(e) => setPerson2Mbti(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2.5 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                >
+                  <option value="" disabled>
+                    MBTI를 선택하세요
+                  </option>
+                  {MBTI_TYPES.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </section>
