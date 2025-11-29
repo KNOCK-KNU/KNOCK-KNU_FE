@@ -41,7 +41,7 @@ const features = [
     title: "오늘의 운세",
     description: "MBTI와 생년월일로 오늘의 운세를 알아보세요",
     icon: Sparkles,
-    href: "/fortune",
+    href: "/luck",
     color: "from-purple-500 to-indigo-500",
   },
 ];
