@@ -3,9 +3,40 @@
 import { useEffect, useRef, useState } from 'react';
 import { Store } from '@/types/store';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface KakaoLatLng {}
+
+interface KakaoMarker {
+  setMap: (map: KakaoMap | null) => void;
+}
+
+interface KakaoLatLngBounds {
+  extend: (position: KakaoLatLng) => void;
+}
+
+interface KakaoMap {
+  setBounds: (bounds: KakaoLatLngBounds) => void;
+  setCenter: (position: KakaoLatLng) => void;
+  setLevel: (level: number) => void;
+  panTo: (position: KakaoLatLng) => void;
+}
+
+interface KakaoMapSDK {
+  maps: {
+    LatLng: new (lat: number, lng: number) => KakaoLatLng;
+    Map: new (container: HTMLElement, options: { center: KakaoLatLng; level: number }) => KakaoMap;
+    Marker: new (options: { map: KakaoMap; position: KakaoLatLng }) => KakaoMarker;
+    LatLngBounds: new () => KakaoLatLngBounds;
+    event: {
+      addListener: (target: KakaoMarker, type: string, callback: () => void) => void;
+    };
+    load: (callback: () => void) => void;
+  };
+}
+
 declare global {
   interface Window {
-    kakao: any;
+    kakao: KakaoMapSDK;
   }
 }
 
@@ -60,8 +91,8 @@ export function KakaoMap({
   resetToken,
 }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<any | null>(null);
-  const markersRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<KakaoMap | null>(null);
+  const markersRef = useRef<KakaoMarker[]>([]);
   const [isMapReady, setIsMapReady] = useState(false);
   const [hasFitBounds, setHasFitBounds] = useState(false); // ✅ 초기/리셋 시에만 bounds 맞추기
 

@@ -1,5 +1,8 @@
 import axios from "axios";
 
+console.log("🔍 Environment variable:", process.env.NEXT_PUBLIC_API_BASE_URL);
+console.log("🔍 Using baseURL:", process.env.NEXT_PUBLIC_API_BASE_URL || "/api");
+
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api",
   timeout: 10000,

@@ -8,119 +8,7 @@ import { Store, DoorType, StoreModifier, StoreCategory } from '@/types/store';
 import { MapPin, Home } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useRouter } from 'next/navigation';
-
-const DOOR_OPTIONS: DoorType[] = [
-  '쪽문',
-  '북문',
-  '솔로문',
-  '정문',
-  '서문',
-  '동문',
-  '교내',
-];
-
-const MODIFIER_OPTIONS: StoreModifier[] = [
-  '조용한',
-  '사람이 많은',
-  '가성비인',
-  '복층',
-  '넓은',
-  '뷔페식',
-  '복층인',
-  '24시간 하는',
-  '양이 많은',
-];
-
-const CATEGORY_OPTIONS: StoreCategory[] = [
-  '음식점',
-  '헬스장',
-  '카페',
-  '술집',
-  '클라이밍',
-];
-
-const MOCK_STORES: Store[] = [
-  {
-    storeId: 1,
-    latitude: 35.8861798993549,
-    longitude: 128.610280129716,
-    name: '더쪽',
-    address: '대구 북구 대현로19길 46 1층',
-    door: '쪽문',
-    modifier: '넓은',
-    category: '카페',
-  },
-  {
-    storeId: 2,
-    latitude: 35.8858748793861,
-    longitude: 128.610265537186,
-    name: '빈트',
-    address: '대구 북구 대현로19길 38-1 1층',
-    door: '쪽문',
-    modifier: '24시간 하는',
-    category: '카페',
-  },
-  {
-    storeId: 3,
-    latitude: 35.885777152616,
-    longitude: 128.6102486089,
-    name: '뽀근닥 경북대점',
-    address: '대구 북구 경대로7길 34 1층',
-    door: '쪽문',
-    modifier: '사람이 많은',
-    category: '음식점',
-  },
-  {
-    storeId: 4,
-    latitude: 35.8850900683466,
-    longitude: 128.614983571372,
-    name: '뉴비클라이밍',
-    address: '대구 동구 경대로 48 3층',
-    door: '정문',
-    modifier: '조용한',
-    category: '클라이밍',
-  },
-  {
-    storeId: 5,
-    latitude: 35.8937256702289,
-    longitude: 128.609117171873,
-    name: '깨꼬닭 본점',
-    address: '대구 북구 산격로8길 35 1층',
-    door: '북문',
-    modifier: '사람이 많은',
-    category: '음식점',
-  },
-  {
-    storeId: 6,
-    latitude: 35.8862955601879,
-    longitude: 128.607081623016,
-    name: '카페 콘크리트 본점',
-    address: '대구 북구 대현로13길 29 1층',
-    door: '솔로문',
-    modifier: '조용한',
-    category: '카페',
-  },
-  {
-    storeId: 7,
-    latitude: 35.8921782677163,
-    longitude: 128.608294246608,
-    name: '덮덮밥 대구본점',
-    address: '대구 북구 대학로 71 1층',
-    door: '북문',
-    modifier: '양이 많은',
-    category: '음식점',
-  },
-  {
-    storeId: 8,
-    latitude: 35.8880590981918,
-    longitude: 128.606016737556,
-    name: '학교 헬스장',
-    address: '대구 북구 대현동 25',
-    door: '교내',
-    modifier: '가성비인',
-    category: '헬스장',
-  },
-];
+import { useStores, useStoreTypes } from '@/hooks/useStore';
 
 export default function MapPage() {
   const router = useRouter();
@@ -139,6 +27,17 @@ export default function MapPage() {
   const [showResults, setShowResults] = useState(false);
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
 
+  // 🔥 React Query로 데이터 가져오기
+  const { data: stores = [], isLoading: isLoadingStores, error: storesError } = useStores();
+  const { data: storeTypes, isLoading: isLoadingTypes } = useStoreTypes();
+
+  // 디버깅
+  console.log('📊 Stores data:', stores);
+  console.log('📊 Stores count:', stores?.length);
+  console.log('📊 Store types:', storeTypes);
+  console.log('📊 Loading:', { isLoadingStores, isLoadingTypes });
+  console.log('📊 Error:', storesError);
+
   // ✅ 바깥 클릭 시 검색 결과 닫기
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -152,7 +51,7 @@ export default function MapPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredByDropdown = MOCK_STORES.filter((store) => {
+  const filteredByDropdown = stores.filter((store: Store) => {
     const doorOk = doorFilter === 'ALL' || store.door === doorFilter;
     const modifierOk =
       modifierFilter === 'ALL' || store.modifier === modifierFilter;
@@ -164,7 +63,7 @@ export default function MapPage() {
   const searchResults =
     search.trim().length === 0
       ? filteredByDropdown
-      : filteredByDropdown.filter((store) =>
+      : filteredByDropdown.filter((store: Store) =>
           store.name.toLowerCase().includes(search.toLowerCase())
         );
 
@@ -193,11 +92,40 @@ export default function MapPage() {
     router.push('/');
   };
 
+  // 로딩 상태
+  if (isLoadingStores || isLoadingTypes) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">데이터를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (storesError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">데이터를 불러오는데 실패했습니다.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            다시 시도
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Compact Header with Back Button */}
       <div className="pt-4 px-4 pb-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
           <button
             onClick={handleBackToHome}
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
@@ -219,7 +147,7 @@ export default function MapPage() {
         </div>
       </div>
 
-      <div className="w-full max-w-5xl mx-auto px-4 pb-8">
+      <div className="w-full max-w-2xl mx-auto px-4 pb-8">
         <section
           className="
             relative
@@ -308,7 +236,7 @@ export default function MapPage() {
                     className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm"
                   >
                     <option value="ALL">전체</option>
-                    {DOOR_OPTIONS.map((d) => (
+                    {storeTypes?.doorOptions.map((d) => (
                       <option key={d} value={d}>
                         {d}
                       </option>
@@ -331,7 +259,7 @@ export default function MapPage() {
                     className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm"
                   >
                     <option value="ALL">전체</option>
-                    {MODIFIER_OPTIONS.map((m) => (
+                    {storeTypes?.modifierOptions.map((m) => (
                       <option key={m} value={m}>
                         {m}
                       </option>
@@ -354,7 +282,7 @@ export default function MapPage() {
                     className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm"
                   >
                     <option value="ALL">전체</option>
-                    {CATEGORY_OPTIONS.map((c) => (
+                    {storeTypes?.categoryOptions.map((c) => (
                       <option key={c} value={c}>
                         {c}
                       </option>
