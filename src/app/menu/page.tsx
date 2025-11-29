@@ -352,18 +352,18 @@ export default function MenuPage() {
   if (view === "input") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
-
+        {/* Header with Back Button and Theme Toggle */}
         <div className="pt-4 px-4">
-          <button
-            onClick={handleBackToHome}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
-          >
-            <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
-          </button>
+          <div className="max-w-2xl mx-auto flex items-center justify-between">
+            <button
+              onClick={handleBackToHome}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
+            >
+              <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
 
         <header className="pt-8 pb-8 px-4">
@@ -555,18 +555,18 @@ export default function MenuPage() {
   if (view === "roulette") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
-
+        {/* Header with Back Button and Theme Toggle */}
         <div className="pt-4 px-4">
-          <button
-            onClick={handleBackToInput}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
-          >
-            <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">처음으로</span>
-          </button>
+          <div className="max-w-2xl mx-auto flex items-center justify-between">
+            <button
+              onClick={handleBackToInput}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
+            >
+              <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">처음으로</span>
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
 
         <main className="max-w-2xl mx-auto px-6 py-8">
@@ -624,18 +624,18 @@ export default function MenuPage() {
   if (view === "ladder") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
-
+        {/* Header with Back Button and Theme Toggle */}
         <div className="pt-4 px-4">
-          <button
-            onClick={handleBackToInput}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
-          >
-            <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">처음으로</span>
-          </button>
+          <div className="max-w-4xl mx-auto flex items-center justify-between">
+            <button
+              onClick={handleBackToInput}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
+            >
+              <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">처음으로</span>
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
 
         <main className="max-w-4xl mx-auto px-6 py-8">
@@ -699,11 +699,14 @@ export default function MenuPage() {
   if (view === "result") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
+        {/* Header with Theme Toggle */}
+        <div className="pt-4 px-4">
+          <div className="max-w-2xl mx-auto flex items-center justify-end">
+            <ThemeToggle />
+          </div>
         </div>
 
-        <main className="max-w-2xl mx-auto px-6 py-16">
+        <main className="max-w-2xl mx-auto px-6 py-8">
           <div className="text-center">
             <div className="bg-white dark:bg-slate-800 rounded-3xl p-12 shadow-2xl mb-8">
               <div className="mb-6">

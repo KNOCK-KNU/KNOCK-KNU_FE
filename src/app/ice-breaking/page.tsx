@@ -155,20 +155,18 @@ export default function IceBreakingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Theme Toggle */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
-
-      {/* Back Button */}
+      {/* Header with Back Button and Theme Toggle */}
       <div className="pt-4 px-4">
-        <button
-          onClick={handleBackToHome}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
-        >
-          <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
-        </button>
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <button
+            onClick={handleBackToHome}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
+          >
+            <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
+          </button>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Header */}
