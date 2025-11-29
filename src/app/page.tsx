@@ -49,23 +49,26 @@ const features = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Theme Toggle - Fixed Position */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
+      {/* Header with Theme Toggle */}
+      <header className="pt-4 pb-8 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Theme Toggle */}
+          <div className="flex justify-end mb-8">
+            <ThemeToggle />
+          </div>
 
-      {/* Header */}
-      <header className="pt-16 pb-8 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
-            KNOCK-KNU
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">
-            경북대학교 캠퍼스 소셜 플랫폼
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Knock on KNU, break the ice together!
-          </p>
+          {/* Title Section */}
+          <div className="text-center">
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
+              KNOCK-KNU
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">
+              경북대학교 캠퍼스 소셜 플랫폼
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Knock on KNU, break the ice together!
+            </p>
+          </div>
         </div>
       </header>
 

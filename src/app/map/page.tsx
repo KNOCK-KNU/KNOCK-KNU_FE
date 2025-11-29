@@ -5,6 +5,9 @@ import { KakaoMap } from '@/components/KakaoMap';
 import { StoreSearchBar } from '@/components/StoreSearchBar';
 import { StoreDetailOverlay } from '@/components/StoreDetailOverlay';
 import { Store, DoorType, StoreModifier, StoreCategory } from '@/types/store';
+import { MapPin, Home } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { useRouter } from 'next/navigation';
 
 const DOOR_OPTIONS: DoorType[] = [
   '쪽문',
@@ -120,6 +123,7 @@ const MOCK_STORES: Store[] = [
 ];
 
 export default function MapPage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [doorFilter, setDoorFilter] = useState<DoorType | 'ALL'>('ALL');
   const [modifierFilter, setModifierFilter] = useState<StoreModifier | 'ALL'>(
@@ -185,18 +189,47 @@ export default function MapPage() {
     setShowResults(false); // ✅ 결과 클릭 시 닫기
   }, []);
 
+  const handleBackToHome = () => {
+    router.push('/');
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-      <div className="w-full max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      {/* Compact Header with Back Button */}
+      <div className="pt-4 px-4 pb-4">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <button
+            onClick={handleBackToHome}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
+          >
+            <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
+          </button>
+
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+              주변 맛집 지도
+            </h1>
+          </div>
+
+          <ThemeToggle />
+        </div>
+      </div>
+
+      <div className="w-full max-w-5xl mx-auto px-4 pb-8">
         <section
           className="
-            relative 
-            w-full 
-            h-[100vh] 
-            rounded-2xl 
-            border border-gray-200 dark:border-slate-700 
-            bg-slate-100 dark:bg-slate-800 
+            relative
+            w-full
+            h-[calc(100vh-10rem)]
+            rounded-2xl
+            border border-gray-200 dark:border-slate-700
+            bg-slate-100 dark:bg-slate-800
             overflow-hidden
+            shadow-lg
           "
         >
           {/* 지도 */}
@@ -258,11 +291,11 @@ export default function MapPage() {
 
           {/* 하단 필터 드롭다운 바 */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 w-full px-4 flex justify-center pointer-events-none">
-            <div className="w-full max-w-3xl rounded-2xl bg-white/95 dark:bg-slate-900/95 shadow-lg border border-slate-200 dark:border-slate-700 p-3 md:p-4 pointer-events-auto">
-              <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between text-sm">
+            <div className="w-full max-w-md rounded-2xl bg-white/95 dark:bg-slate-900/95 shadow-lg border border-slate-200 dark:border-slate-700 p-4 pointer-events-auto">
+              <div className="flex flex-col gap-3 text-sm">
                 {/* 출입문 */}
-                <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
-                  <span className="text-xs text-slate-500 md:w-14">출입문</span>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-slate-500">출입문</span>
                   <select
                     value={doorFilter}
                     onChange={(e) =>
@@ -272,7 +305,7 @@ export default function MapPage() {
                           : (e.target.value as DoorType)
                       )
                     }
-                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1 text-sm"
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm"
                   >
                     <option value="ALL">전체</option>
                     {DOOR_OPTIONS.map((d) => (
@@ -284,8 +317,8 @@ export default function MapPage() {
                 </div>
 
                 {/* 분위기 */}
-                <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
-                  <span className="text-xs text-slate-500 md:w-14">분위기</span>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-slate-500">분위기</span>
                   <select
                     value={modifierFilter}
                     onChange={(e) =>
@@ -295,7 +328,7 @@ export default function MapPage() {
                           : (e.target.value as StoreModifier)
                       )
                     }
-                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1 text-sm"
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm"
                   >
                     <option value="ALL">전체</option>
                     {MODIFIER_OPTIONS.map((m) => (
@@ -307,10 +340,8 @@ export default function MapPage() {
                 </div>
 
                 {/* 카테고리 */}
-                <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
-                  <span className="text-xs text-slate-500 md:w-14">
-                    카테고리
-                  </span>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-slate-500">카테고리</span>
                   <select
                     value={categoryFilter}
                     onChange={(e) =>
@@ -320,7 +351,7 @@ export default function MapPage() {
                           : (e.target.value as StoreCategory)
                       )
                     }
-                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-1 text-sm"
+                    className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm"
                   >
                     <option value="ALL">전체</option>
                     {CATEGORY_OPTIONS.map((c) => (
@@ -332,7 +363,7 @@ export default function MapPage() {
                 </div>
               </div>
 
-              <div className="mt-2 text-xs text-slate-500">
+              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500">
                 현재 보기: <span className="font-medium">{filterSentence}</span>
               </div>
             </div>
@@ -376,6 +407,11 @@ export default function MapPage() {
           )}
         </section>
       </div>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
+        <p>Made with ❤️ for KNU Students</p>
+      </footer>
     </div>
   );
 }

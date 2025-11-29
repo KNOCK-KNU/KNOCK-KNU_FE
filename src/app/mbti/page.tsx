@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Users, Home } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { useRouter } from 'next/navigation';
 
 const MBTI_TYPES = [
   'ISTJ',
@@ -22,10 +25,15 @@ const MBTI_TYPES = [
 ];
 
 export default function MBTIPage() {
+  const router = useRouter();
   const [person1Name, setPerson1Name] = useState('');
   const [person1Mbti, setPerson1Mbti] = useState('');
   const [person2Name, setPerson2Name] = useState('');
   const [person2Mbti, setPerson2Mbti] = useState('');
+
+  const handleBackToHome = () => {
+    router.push('/');
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,23 +47,47 @@ export default function MBTIPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 py-10">
-      <div className="w-full max-w-2xl">
-        {/* 헤더 영역 */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50 mb-3">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      {/* Header with Back Button and Theme Toggle */}
+      <div className="pt-4 px-4">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <button
+            onClick={handleBackToHome}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
+          >
+            <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
+          </button>
+          <ThemeToggle />
+        </div>
+      </div>
+
+      {/* Header */}
+      <header className="pt-8 pb-8 px-4">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+              <Users className="w-7 h-7 text-white" />
+            </div>
+          </div>
+          <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
             MBTI 궁합 보기
           </h1>
-          <p className="text-sm md:text-base text-gray-600 dark:text-slate-300 max-w-xl mx-auto">
-            이름과 MBTI를 입력하면 두 사람의 궁합을 AI가 분석해드립니다. 성향과
-            대화 스타일까지 포함한 상세 궁합 설명을 받아보세요.
+          <p className="text-gray-600 dark:text-gray-300 mb-2">
+            이름과 MBTI를 입력하면 두 사람의 궁합을 AI가 분석해드립니다.
+          </p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            성향과 대화 스타일까지 포함한 상세 궁합 설명을 받아보세요
           </p>
         </div>
+      </header>
+
+      <div className="max-w-2xl mx-auto px-4 pb-16">
 
         {/* 카드 */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-slate-900/70 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg shadow-slate-900/10 backdrop-blur p-6 md:p-8 space-y-7"
+          className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6 md:p-8 space-y-7"
         >
           {/* 사람 1 */}
           <section className="space-y-4">
@@ -178,7 +210,7 @@ export default function MBTIPage() {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-400 text-white text-sm font-semibold py-3 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-sm font-semibold py-3 shadow-md transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={
                 !person1Name || !person1Mbti || !person2Name || !person2Mbti
               }
@@ -188,6 +220,11 @@ export default function MBTIPage() {
           </div>
         </form>
       </div>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
+        <p>Made with ❤️ for KNU Students</p>
+      </footer>
     </div>
   );
 }
