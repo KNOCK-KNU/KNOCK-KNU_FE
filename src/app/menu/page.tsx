@@ -626,7 +626,7 @@ export default function MenuPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         {/* Header with Back Button and Theme Toggle */}
         <div className="pt-4 px-4">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="max-w-2xl mx-auto flex items-center justify-between">
             <button
               onClick={handleBackToInput}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
@@ -638,7 +638,7 @@ export default function MenuPage() {
           </div>
         </div>
 
-        <main className="max-w-4xl mx-auto px-6 py-8">
+        <main className="max-w-2xl mx-auto px-6 py-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
               사다리타기

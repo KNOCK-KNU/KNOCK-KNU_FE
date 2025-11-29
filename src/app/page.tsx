@@ -51,7 +51,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Header with Theme Toggle */}
       <header className="pt-4 pb-8 px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           {/* Theme Toggle */}
           <div className="flex justify-end mb-8">
             <ThemeToggle />
@@ -73,7 +73,7 @@ export default function Home() {
       </header>
 
       {/* Features Grid */}
-      <main className="max-w-6xl mx-auto px-6 pb-16">
+      <main className="max-w-2xl mx-auto px-6 pb-16">
         <div className="grid grid-cols-1 gap-6">
           {features.map((feature) => {
             const Icon = feature.icon;

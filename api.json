@@ -1,0 +1,183 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [
+    { "url": "http://3.22.236.92:8080", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/api/mbticomb": {
+      "post": {
+        "tags": ["compatibility-controller"],
+        "operationId": "getCompatibility",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CompatibilityRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompatibiiltyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/luck": {
+      "post": {
+        "tags": ["fortune-controller"],
+        "operationId": "getFortune",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FortuneRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/FortuneResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/store": {
+      "get": {
+        "tags": ["store-controller"],
+        "operationId": "getAllStores",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/StoreResponse" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/store/{id}": {
+      "get": {
+        "tags": ["store-controller"],
+        "operationId": "getStore",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/StoreResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/store/types": {
+      "get": {
+        "tags": ["store-controller"],
+        "operationId": "getAllTypes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/TypeResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompatibilityRequest": {
+        "type": "object",
+        "properties": {
+          "name1": { "type": "string" },
+          "mbti1": { "type": "string" },
+          "name2": { "type": "string" },
+          "mbti2": { "type": "string" }
+        }
+      },
+      "CompatibiiltyResponse": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "score": { "type": "integer", "format": "int32" },
+          "goodPoint": { "type": "string" },
+          "badPoint": { "type": "string" },
+          "advice": { "type": "string" }
+        }
+      },
+      "FortuneRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "birth": { "type": "string" },
+          "gender": { "type": "string" },
+          "mbti": { "type": "string" }
+        }
+      },
+      "FortuneResponse": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "grandFortune": { "type": "string" },
+          "loveFortune": { "type": "string" },
+          "wealthFortune": { "type": "string" },
+          "studyFortune": { "type": "string" },
+          "score": { "type": "integer", "format": "int32" },
+          "luckyItem": { "type": "string" }
+        }
+      },
+      "StoreResponse": {
+        "type": "object",
+        "properties": {
+          "storeId": { "type": "integer", "format": "int64" },
+          "latitude": { "type": "number", "format": "double" },
+          "longitude": { "type": "number", "format": "double" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "door": { "type": "string" },
+          "modifier": { "type": "string" },
+          "category": { "type": "string" }
+        }
+      },
+      "TypeResponse": {
+        "type": "object",
+        "properties": {
+          "doors": { "type": "array", "items": { "type": "string" } },
+          "modifiers": { "type": "array", "items": { "type": "string" } },
+          "categories": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

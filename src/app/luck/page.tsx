@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Home, Loader2, RotateCcw } from 'lucide-react';
+import { Sparkles, Home, Loader2, Heart, DollarSign, BookOpen, Gift } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useRouter } from 'next/navigation';
 import { useLuck } from '@/hooks/useLuck';
@@ -25,43 +25,28 @@ const MBTI_TYPES = [
   'ENTJ',
 ];
 
-const FORTUNE_TYPES = ['연애운', '금전운'];
+const GENDER_OPTIONS = ['남성', '여성'];
 
 export default function LuckPage() {
   const router = useRouter();
-  const { getLuck, loading, error } = useLuck();
+  const { mutate, isPending, error, data } = useLuck();
   const [name, setName] = useState('');
   const [birth, setBirth] = useState('');
+  const [gender, setGender] = useState('');
   const [mbti, setMbti] = useState('');
-  const [type, setType] = useState('');
-  const [fortune, setFortune] = useState('');
 
   const handleBackToHome = () => {
     router.push('/');
   };
 
-  const handleReset = () => {
-    setFortune('');
-    setName('');
-    setBirth('');
-    setMbti('');
-    setType('');
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      const result = await getLuck({
-        name,
-        birth,
-        mbti,
-        type,
-      });
-      setFortune(result);
-    } catch (err) {
-      // 에러는 useLuck 훅에서 처리됨
-    }
+    mutate({
+      name,
+      birth,
+      gender,
+      mbti,
+    });
   };
 
   const formatBirthInput = (value: string) => {
@@ -115,11 +100,11 @@ export default function LuckPage() {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 pb-16">
-        {!fortune ? (
+        {!data ? (
           /* Input Form */
           <form
             onSubmit={handleSubmit}
-            className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6 md:p-8 space-y-6"
+            className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6 space-y-6"
           >
             {/* 이름 */}
             <div className="space-y-2">
@@ -165,7 +150,33 @@ export default function LuckPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              {/* 성별 */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="gender"
+                  className="text-sm font-medium text-gray-700 dark:text-slate-300"
+                >
+                  성별
+                </label>
+                <select
+                  id="gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  required
+                >
+                  <option value="" disabled>
+                    성별을 선택하세요
+                  </option>
+                  {GENDER_OPTIONS.map((genderOption) => (
+                    <option key={genderOption} value={genderOption}>
+                      {genderOption}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* MBTI */}
               <div className="space-y-2">
                 <label
@@ -191,39 +202,13 @@ export default function LuckPage() {
                   ))}
                 </select>
               </div>
-
-              {/* 운세 타입 */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="type"
-                  className="text-sm font-medium text-gray-700 dark:text-slate-300"
-                >
-                  운세 타입
-                </label>
-                <select
-                  id="type"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                  required
-                >
-                  <option value="" disabled>
-                    운세를 선택하세요
-                  </option>
-                  {FORTUNE_TYPES.map((fortuneType) => (
-                    <option key={fortuneType} value={fortuneType}>
-                      {fortuneType}
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
 
             {/* 에러 메시지 */}
             {error && (
               <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
                 <p className="text-sm text-red-600 dark:text-red-400">
-                  {error}
+                  {error.message || '운세를 불러오는데 실패했습니다.'}
                 </p>
               </div>
             )}
@@ -231,10 +216,10 @@ export default function LuckPage() {
             {/* 제출 버튼 */}
             <button
               type="submit"
-              disabled={loading || !name || birth.length !== 8 || !mbti || !type}
+              disabled={isPending || !name || birth.length !== 8 || !gender || !mbti}
               className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white text-sm font-semibold py-3 shadow-md transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? (
+              {isPending ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
                   운세 확인 중...
@@ -250,47 +235,113 @@ export default function LuckPage() {
         ) : (
           /* Fortune Result */
           <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-8 md:p-10">
-              {/* Result Header */}
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center mb-4">
-                  <Sparkles className="w-8 h-8 text-white" />
+            {/* Result Header */}
+            <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6 text-center">
+              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center mb-4">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                {data.title}
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                {name}님 · 생년월일: {birth.slice(0, 4)}년 {birth.slice(4, 6)}월{' '}
+                {birth.slice(6, 8)}일 · {gender} · MBTI: {mbti}
+              </p>
+
+              {/* Score */}
+              <div className="flex items-center justify-center gap-3">
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
+                  {data.score}
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-                  {name}님의 {type}
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  생년월일: {birth.slice(0, 4)}년 {birth.slice(4, 6)}월{' '}
-                  {birth.slice(6, 8)}일 · MBTI: {mbti}
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  / 100
+                </div>
+              </div>
+            </div>
+
+            {/* Fortune Cards */}
+            <div className="space-y-4">
+              {/* 종합운 */}
+              <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                    종합운
+                  </h3>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {data.grandFortune}
                 </p>
               </div>
 
-              {/* Fortune Content */}
-              <div className="relative">
-                <div className="absolute top-0 left-0 text-6xl text-purple-200 dark:text-purple-900 leading-none">
-                  "
+              {/* 연애운 */}
+              <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
+                    <Heart className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                    연애운
+                  </h3>
                 </div>
-                <div className="absolute bottom-0 right-0 text-6xl text-purple-200 dark:text-purple-900 leading-none">
-                  "
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {data.loveFortune}
+                </p>
+              </div>
+
+              {/* 금전운 */}
+              <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                    금전운
+                  </h3>
                 </div>
-                <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300 px-8 py-4 text-center whitespace-pre-wrap">
-                  {fortune}
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {data.wealthFortune}
+                </p>
+              </div>
+
+              {/* 학업운 */}
+              <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                    학업운
+                  </h3>
+                </div>
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  {data.studyFortune}
                 </p>
               </div>
             </div>
 
+            {/* Lucky Item */}
+            <div className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-2xl shadow-lg p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
+                  <Gift className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 dark:text-white">
+                  오늘의 행운 아이템
+                </h3>
+              </div>
+              <p className="text-xl font-semibold text-purple-600 dark:text-purple-400">
+                {data.luckyItem}
+              </p>
+            </div>
+
             {/* Action Buttons */}
-            <div className="flex gap-4">
-              <button
-                onClick={handleReset}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 font-bold shadow-md active:scale-95 transition-transform"
-              >
-                <RotateCcw className="w-5 h-5" />
-                다시 보기
-              </button>
+            <div className="flex justify-center">
               <button
                 onClick={handleBackToHome}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-white font-bold shadow-lg active:scale-95 transition-transform"
+                className="w-full px-8 py-3 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 text-white font-bold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2"
               >
                 <Home className="w-5 h-5" />
                 홈으로
