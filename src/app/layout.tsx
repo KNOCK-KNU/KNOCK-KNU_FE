@@ -1,22 +1,24 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "./providers";
-import { ThemeProvider } from "./theme-provider";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import { Providers } from './providers';
+import { ThemeProvider } from './theme-provider';
+import Script from 'next/script'; // ✅ 추가
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "KNOCK-KNU | 경북대학교 캠퍼스 소셜 플랫폼",
-  description: "경북대학교 학생들을 위한 캠퍼스 소셜 & 유틸리티 플랫폼. 아이스브레이킹, 메뉴 고르기, MBTI 궁합, 오늘의 운세까지!",
+  title: 'KNOCK-KNU | 경북대학교 캠퍼스 소셜 플랫폼',
+  description:
+    '경북대학교 학생들을 위한 캠퍼스 소셜 & 유틸리티 플랫폼. 아이스브레이킹, 메뉴 고르기, MBTI 궁합, 오늘의 운세까지!',
 };
 
 export default function RootLayout({
@@ -29,6 +31,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false`}
+          strategy="afterInteractive"
+        />
+
         <div id="app-container">
           <ThemeProvider>
             <Providers>{children}</Providers>
