@@ -70,7 +70,7 @@ function KakaoMapInner({
 
       const map = new kakao.maps.Map(mapRef.current, {
         center,
-        level: 5,
+        level: 6,
       });
 
       mapInstanceRef.current = map;

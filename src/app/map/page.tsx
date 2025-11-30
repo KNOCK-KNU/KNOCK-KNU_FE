@@ -162,7 +162,7 @@ export default function MapPage() {
           className="
             relative
             w-full
-            h-[calc(100vh-10rem)]
+            h-[calc(100vh-7rem)]
             rounded-2xl
             border border-gray-200 dark:border-slate-700
             bg-slate-100 dark:bg-slate-800
@@ -315,11 +315,6 @@ export default function MapPage() {
           )}
         </section>
       </div>
-
-      {/* Footer */}
-      <footer className="py-8 text-center text-gray-500 dark:text-gray-400 text-sm">
-        <p>Made with ❤️ for KNU Students</p>
-      </footer>
     </div>
   );
 }
