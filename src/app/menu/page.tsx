@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 import {
   Utensils,
   Plus,
@@ -9,18 +9,18 @@ import {
   GitBranch,
   Home,
   RotateCcw,
-} from 'lucide-react';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
+} from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 // Dynamic import to avoid SSR issues with react-custom-roulette
 const Wheel = dynamic(
-  () => import('react-custom-roulette').then((mod) => mod.Wheel),
+  () => import("react-custom-roulette").then((mod) => mod.Wheel),
   { ssr: false }
 );
 
-type View = 'input' | 'roulette' | 'ladder' | 'result';
+type View = "input" | "roulette" | "ladder" | "result";
 
 interface RouletteData {
   option: string;
@@ -32,10 +32,10 @@ interface RouletteData {
 
 export default function MenuPage() {
   const router = useRouter();
-  const [view, setView] = useState<View>('input');
+  const [view, setView] = useState<View>("input");
   const [menus, setMenus] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [selectedMenu, setSelectedMenu] = useState<string>('');
+  const [inputValue, setInputValue] = useState("");
+  const [selectedMenu, setSelectedMenu] = useState<string>("");
 
   // Roulette states
   const [mustSpin, setMustSpin] = useState(false);
@@ -43,10 +43,12 @@ export default function MenuPage() {
 
   // Ladder states
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ladderContainerRef = useRef<HTMLDivElement>(null);
   const [ladderData, setLadderData] = useState<number[][]>([]);
   const [selectedStart, setSelectedStart] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef<number | undefined>(undefined);
+  const [ladderWidth, setLadderWidth] = useState(800);
 
   const handleAddMenu = () => {
     const trimmedValue = inputValue.trim();
@@ -59,12 +61,12 @@ export default function MenuPage() {
     if (
       menus.some((menu) => menu.toLowerCase() === trimmedValue.toLowerCase())
     ) {
-      alert('이미 추가된 메뉴입니다!');
+      alert("이미 추가된 메뉴입니다!");
       return;
     }
 
     setMenus([...menus, trimmedValue]);
-    setInputValue('');
+    setInputValue("");
   };
 
   const handleRemoveMenu = (index: number) => {
@@ -72,19 +74,19 @@ export default function MenuPage() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
       e.preventDefault();
       handleAddMenu();
     }
   };
 
   const handleBackToHome = () => {
-    router.push('/');
+    router.push("/");
   };
 
   const handleBackToInput = () => {
-    setView('input');
-    setSelectedMenu('');
+    setView("input");
+    setSelectedMenu("");
     setMustSpin(false);
     setPrizeNumber(0);
     setSelectedStart(null);
@@ -96,7 +98,7 @@ export default function MenuPage() {
   };
 
   const handleStartRoulette = () => {
-    setView('roulette');
+    setView("roulette");
   };
 
   const handleStartLadder = () => {
@@ -106,23 +108,23 @@ export default function MenuPage() {
     if (animationRef.current !== undefined) {
       cancelAnimationFrame(animationRef.current);
     }
-    setView('ladder');
+    setView("ladder");
     generateLadder();
   };
 
   // Roulette functions
   const getRouletteColors = () => {
     return [
-      '#EF4444', // red-500
-      '#F97316', // orange-500
-      '#10B981', // emerald-500
-      '#8B5CF6', // purple-500
-      '#F59E0B', // amber-500
-      '#3B82F6', // blue-500
-      '#EC4899', // pink-500
-      '#14B8A6', // teal-500
-      '#6366F1', // indigo-500
-      '#84CC16', // lime-500
+      "#EF4444", // red-500
+      "#F97316", // orange-500
+      "#10B981", // emerald-500
+      "#8B5CF6", // purple-500
+      "#F59E0B", // amber-500
+      "#3B82F6", // blue-500
+      "#EC4899", // pink-500
+      "#14B8A6", // teal-500
+      "#6366F1", // indigo-500
+      "#84CC16", // lime-500
     ];
   };
 
@@ -132,7 +134,7 @@ export default function MenuPage() {
       option: menu,
       style: {
         backgroundColor: colors[index % colors.length],
-        textColor: 'white',
+        textColor: "white",
       },
     }));
   };
@@ -149,7 +151,7 @@ export default function MenuPage() {
     setMustSpin(false);
     setSelectedMenu(menus[prizeNumber]);
     setTimeout(() => {
-      setView('result');
+      setView("result");
     }, 500);
   };
 
@@ -176,7 +178,7 @@ export default function MenuPage() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const numLines = menus.length;
@@ -189,7 +191,7 @@ export default function MenuPage() {
     ctx.clearRect(0, 0, width, height);
 
     // Draw vertical lines
-    ctx.strokeStyle = '#10B981'; // emerald-500
+    ctx.strokeStyle = "#10B981"; // emerald-500
     ctx.lineWidth = 3;
     for (let i = 0; i < numLines; i++) {
       const x = padding + i * lineSpacing;
@@ -200,7 +202,7 @@ export default function MenuPage() {
     }
 
     // Draw horizontal bridges
-    ctx.strokeStyle = '#14B8A6'; // teal-500
+    ctx.strokeStyle = "#14B8A6"; // teal-500
     ctx.lineWidth = 3;
     ladderData.forEach((bridges, level) => {
       bridges.forEach((pos) => {
@@ -220,7 +222,7 @@ export default function MenuPage() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const numLines = menus.length;
@@ -240,7 +242,7 @@ export default function MenuPage() {
         setSelectedMenu(menus[currentPos]);
         setIsAnimating(false);
         setTimeout(() => {
-          setView('result');
+          setView("result");
         }, 500);
         return;
       }
@@ -316,13 +318,13 @@ export default function MenuPage() {
       }
 
       // Draw ball
-      ctx.fillStyle = '#F59E0B'; // amber-500
+      ctx.fillStyle = "#F59E0B"; // amber-500
       ctx.beginPath();
       ctx.arc(currentX, currentY, 8, 0, Math.PI * 2);
       ctx.fill();
 
       // Draw shadow
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
       ctx.beginPath();
       ctx.arc(currentX, currentY + 2, 8, 0, Math.PI * 2);
       ctx.fill();
@@ -340,13 +342,22 @@ export default function MenuPage() {
   };
 
   useEffect(() => {
-    if (view === 'ladder' && canvasRef.current && ladderData.length > 0) {
+    if (
+      view === "ladder" &&
+      canvasRef.current &&
+      ladderContainerRef.current &&
+      ladderData.length > 0
+    ) {
       const canvas = canvasRef.current;
-      const container = canvas.parentElement;
-      if (container) {
-        canvas.width = Math.min(container.clientWidth - 40, 800);
-        canvas.height = ladderData.length * 25;
-      }
+      const container = ladderContainerRef.current;
+      const containerWidth = container.clientWidth - 40;
+      // Calculate minimum width based on menu count (minimum 80px spacing between items)
+      const minRequiredWidth =
+        menus.length > 1 ? 50 * 2 + (menus.length - 1) * 80 : 200;
+      const width = Math.max(minRequiredWidth, Math.min(containerWidth, 800));
+      canvas.width = width;
+      canvas.height = ladderData.length * 25;
+      setLadderWidth(width);
       drawLadder();
     }
 
@@ -356,13 +367,13 @@ export default function MenuPage() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, ladderData]);
+  }, [view, ladderData, menus.length]);
 
   const isAddDisabled = !inputValue.trim() || menus.length >= 10;
   const isSelectionDisabled = menus.length < 2;
 
   // Render Input View
-  if (view === 'input') {
+  if (view === "input") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         {/* Header with Back Button and Theme Toggle */}
@@ -426,8 +437,8 @@ export default function MenuPage() {
                 disabled={isAddDisabled}
                 className={`px-4 py-3 rounded-xl font-medium transition-transform ${
                   isAddDisabled
-                    ? 'bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md active:scale-95'
+                    ? "bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                    : "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-md active:scale-95"
                 }`}
               >
                 <Plus className="w-5 h-5" />
@@ -476,8 +487,8 @@ export default function MenuPage() {
               disabled={isSelectionDisabled}
               className={`relative w-full bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg transition-transform ${
                 isSelectionDisabled
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'active:scale-98'
+                  ? "opacity-50 cursor-not-allowed"
+                  : "active:scale-98"
               }`}
             >
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-4">
@@ -516,8 +527,8 @@ export default function MenuPage() {
               disabled={isSelectionDisabled}
               className={`relative w-full bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg transition-transform ${
                 isSelectionDisabled
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'active:scale-98'
+                  ? "opacity-50 cursor-not-allowed"
+                  : "active:scale-98"
               }`}
             >
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-4">
@@ -567,7 +578,7 @@ export default function MenuPage() {
   }
 
   // Render Roulette View
-  if (view === 'roulette') {
+  if (view === "roulette") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         {/* Header with Back Button and Theme Toggle */}
@@ -603,8 +614,8 @@ export default function MenuPage() {
                 prizeNumber={prizeNumber}
                 data={getRouletteData()}
                 onStopSpinning={handleStopSpinning}
-                backgroundColors={['#3e3e3e', '#df3428']}
-                textColors={['#ffffff']}
+                backgroundColors={["#3e3e3e", "#df3428"]}
+                textColors={["#ffffff"]}
                 outerBorderColor="#374151"
                 outerBorderWidth={5}
                 innerBorderColor="#6B7280"
@@ -625,11 +636,11 @@ export default function MenuPage() {
               disabled={mustSpin}
               className={`px-8 py-4 rounded-2xl font-bold text-lg transition-transform ${
                 mustSpin
-                  ? 'bg-gray-300 dark:bg-slate-700 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-lg active:scale-95'
+                  ? "bg-gray-300 dark:bg-slate-700 text-gray-500 cursor-not-allowed"
+                  : "bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-lg active:scale-95"
               }`}
             >
-              {mustSpin ? '돌리는 중...' : '룰렛 돌리기'}
+              {mustSpin ? "돌리는 중..." : "룰렛 돌리기"}
             </button>
           </div>
         </main>
@@ -638,7 +649,7 @@ export default function MenuPage() {
   }
 
   // Render Ladder View
-  if (view === 'ladder') {
+  if (view === "ladder") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         {/* Header with Back Button and Theme Toggle */}
@@ -664,51 +675,82 @@ export default function MenuPage() {
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
               {selectedStart === null
-                ? '출발 위치를 선택하세요'
-                : '사다리를 타고 있습니다...'}
+                ? "출발 위치를 선택하세요"
+                : "사다리를 타고 있습니다..."}
             </p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg mb-6">
-            {/* Start Buttons */}
-            <div className="flex justify-center gap-4 mb-6 flex-wrap">
-              {menus.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleLadderStart(index)}
-                  disabled={selectedStart !== null || isAnimating}
-                  className={`px-6 py-3 rounded-xl font-bold transition-transform ${
-                    selectedStart === index
-                      ? 'bg-gradient-to-br from-green-500 to-emerald-500 text-white scale-105 shadow-lg'
-                      : selectedStart !== null
-                      ? 'bg-gray-200 dark:bg-slate-700 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-md active:scale-95'
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
-
-            {/* Canvas */}
-            <div className="overflow-x-auto">
-              <canvas
-                ref={canvasRef}
-                className="mx-auto"
-                style={{ maxWidth: '100%' }}
-              />
-            </div>
-
-            {/* Result Menus */}
-            <div className="flex justify-center gap-4 mt-6 flex-wrap">
-              {menus.map((menu, index) => (
-                <div
-                  key={index}
-                  className="px-4 py-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white font-bold text-center text-sm min-w-[80px]"
-                >
-                  {menu}
+            {/* Scrollable Container */}
+            <div
+              ref={ladderContainerRef}
+              className="overflow-x-auto -mx-6 px-6"
+            >
+              <div
+                className="relative mx-auto"
+                style={{
+                  width: `${ladderWidth}px`,
+                  minWidth: `${Math.max(200, menus.length * 80)}px`,
+                }}
+              >
+                {/* Start Buttons */}
+                <div className="relative mb-6" style={{ height: "48px" }}>
+                  {menus.map((_, index) => {
+                    const padding = 50;
+                    const lineSpacing =
+                      menus.length > 1
+                        ? (ladderWidth - padding * 2) / (menus.length - 1)
+                        : 0;
+                    const x = padding + index * lineSpacing;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleLadderStart(index)}
+                        disabled={selectedStart !== null || isAnimating}
+                        className={`absolute transform -translate-x-1/2 px-6 py-3 rounded-xl font-bold transition-transform ${
+                          selectedStart === index
+                            ? "bg-gradient-to-br from-green-500 to-emerald-500 text-white scale-105 shadow-lg"
+                            : selectedStart !== null
+                            ? "bg-gray-200 dark:bg-slate-700 text-gray-400 cursor-not-allowed"
+                            : "bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-md active:scale-95"
+                        }`}
+                        style={{ left: `${x}px` }}
+                      >
+                        {index + 1}
+                      </button>
+                    );
+                  })}
                 </div>
-              ))}
+
+                {/* Canvas */}
+                <div className="flex justify-center">
+                  <canvas
+                    ref={canvasRef}
+                    style={{ width: `${ladderWidth}px` }}
+                  />
+                </div>
+
+                {/* Result Menus */}
+                <div className="relative mt-6" style={{ height: "48px" }}>
+                  {menus.map((menu, index) => {
+                    const padding = 50;
+                    const lineSpacing =
+                      menus.length > 1
+                        ? (ladderWidth - padding * 2) / (menus.length - 1)
+                        : 0;
+                    const x = padding + index * lineSpacing;
+                    return (
+                      <div
+                        key={index}
+                        className="absolute transform -translate-x-1/2 px-4 py-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 text-white font-bold text-center text-sm whitespace-nowrap"
+                        style={{ left: `${x}px` }}
+                      >
+                        {menu}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </main>
@@ -717,7 +759,7 @@ export default function MenuPage() {
   }
 
   // Render Result View
-  if (view === 'result') {
+  if (view === "result") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
         {/* Header with Theme Toggle */}
@@ -746,8 +788,8 @@ export default function MenuPage() {
             <div className="flex gap-4 justify-center">
               <button
                 onClick={() => {
-                  setView('input');
-                  setSelectedMenu('');
+                  setView("input");
+                  setSelectedMenu("");
                   setMustSpin(false);
                   setPrizeNumber(0);
                   setSelectedStart(null);
