@@ -191,7 +191,7 @@ export default function MapPage() {
                   setSearch(v);
                   setShowResults(true); // 입력 시작하면 자동으로 열기
                 }}
-                placeholder="가게 이름으로 검색하세요 (예: 덮덮밥)"
+                placeholder="가게 이름으로 검색하세요"
               />
 
               {showResults &&
@@ -207,8 +207,8 @@ export default function MapPage() {
                         >
                           <div className="font-medium">{store.name}</div>
                           <div className="text-xs text-slate-500">
-                            {store.address} · {store.door} · {store.category} ·{' '}
-                            {store.modifier}
+                            {store.address} · {store.modifier} {store.door}{' '}
+                            {store.category}
                           </div>
                         </li>
                       ))}

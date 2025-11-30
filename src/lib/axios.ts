@@ -1,13 +1,10 @@
-import axios from "axios";
-
-console.log("🔍 Environment variable:", process.env.NEXT_PUBLIC_API_BASE_URL);
-console.log("🔍 Using baseURL:", process.env.NEXT_PUBLIC_API_BASE_URL || "/api");
+import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || '/api',
   timeout: 10000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -35,7 +32,7 @@ axiosInstance.interceptors.response.use(
     // Handle errors globally
     if (error.response?.status === 401) {
       // Handle unauthorized access
-      console.error("Unauthorized access");
+      console.error('Unauthorized access');
     }
     return Promise.reject(error);
   }
