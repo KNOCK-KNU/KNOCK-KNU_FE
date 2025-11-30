@@ -9,6 +9,7 @@ import { MapPin, Home } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useRouter } from 'next/navigation';
 import { useStores, useStoreTypes } from '@/hooks/useStore';
+import { useMemo } from 'react';
 
 export default function MapPage() {
   const router = useRouter();
@@ -21,13 +22,10 @@ export default function MapPage() {
     'ALL'
   );
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
-  const [resetToken, setResetToken] = useState(0);
 
-  // ✅ 검색 결과 박스 열림/닫힘 상태
   const [showResults, setShowResults] = useState(false);
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔥 React Query로 데이터 가져오기
   const {
     data: stores = [],
     isLoading: isLoadingStores,
@@ -36,11 +34,11 @@ export default function MapPage() {
   const { data: storeTypes, isLoading: isLoadingTypes } = useStoreTypes();
 
   // 디버깅
-  console.log('📊 Stores data:', stores);
-  console.log('📊 Stores count:', stores?.length);
-  console.log('📊 Store types:', storeTypes);
-  console.log('📊 Loading:', { isLoadingStores, isLoadingTypes });
-  console.log('📊 Error:', storesError);
+  // console.log('📊 Stores data:', stores);
+  // console.log('📊 Stores count:', stores?.length);
+  // console.log('📊 Store types:', storeTypes);
+  // console.log('📊 Loading:', { isLoadingStores, isLoadingTypes });
+  // console.log('📊 Error:', storesError);
 
   // ✅ 바깥 클릭 시 검색 결과 닫기
   useEffect(() => {
@@ -55,14 +53,18 @@ export default function MapPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredByDropdown = stores.filter((store: Store) => {
-    const doorOk = doorFilter === 'ALL' || store.door === doorFilter;
-    const modifierOk =
-      modifierFilter === 'ALL' || store.modifier === modifierFilter;
-    const categoryOk =
-      categoryFilter === 'ALL' || store.category === categoryFilter;
-    return doorOk && modifierOk && categoryOk;
-  });
+  const filteredByDropdown = useMemo(
+    () =>
+      stores.filter((store: Store) => {
+        const doorOk = doorFilter === 'ALL' || store.door === doorFilter;
+        const modifierOk =
+          modifierFilter === 'ALL' || store.modifier === modifierFilter;
+        const categoryOk =
+          categoryFilter === 'ALL' || store.category === categoryFilter;
+        return doorOk && modifierOk && categoryOk;
+      }),
+    [stores, doorFilter, modifierFilter, categoryFilter]
+  );
 
   const searchResults =
     search.trim().length === 0
