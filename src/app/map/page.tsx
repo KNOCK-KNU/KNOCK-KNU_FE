@@ -28,7 +28,11 @@ export default function MapPage() {
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
 
   // 🔥 React Query로 데이터 가져오기
-  const { data: stores = [], isLoading: isLoadingStores, error: storesError } = useStores();
+  const {
+    data: stores = [],
+    isLoading: isLoadingStores,
+    error: storesError,
+  } = useStores();
   const { data: storeTypes, isLoading: isLoadingTypes } = useStoreTypes();
 
   // 디버깅
@@ -98,7 +102,9 @@ export default function MapPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">데이터를 불러오는 중...</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            데이터를 불러오는 중...
+          </p>
         </div>
       </div>
     );
@@ -131,7 +137,9 @@ export default function MapPage() {
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm active:scale-95 transition-transform"
           >
             <Home className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">홈으로</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              홈으로
+            </span>
           </button>
 
           <div className="flex items-center gap-3">
@@ -166,7 +174,6 @@ export default function MapPage() {
             className="w-full h-full"
             selectedStore={selectedStore}
             onMarkerClick={handleSelectStore}
-            resetToken={resetToken}
           />
 
           {/* 상단 검색 + 결과 리스트 */}
@@ -296,35 +303,6 @@ export default function MapPage() {
               </div>
             </div>
           </div>
-
-          {/* 처음 위치로 보기 버튼 */}
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedStore(null);
-              setResetToken((prev) => prev + 1);
-              setDoorFilter('ALL');
-              setModifierFilter('ALL');
-              setCategoryFilter('ALL');
-              setSearch('');
-              setShowResults(false);
-            }}
-            className="
-              absolute 
-              right-4 
-              bottom-60
-              z-20 
-              px-3 py-1.5 
-              rounded-full 
-              bg-white/90 dark:bg-slate-900/90
-              border border-slate-200 dark:border-slate-700 
-              text-xs 
-              shadow-md
-              hover:bg-slate-50 dark:hover:bg-slate-800
-            "
-          >
-            처음 위치로 보기
-          </button>
 
           {/* 상세 말풍선 */}
           {selectedStore && (
